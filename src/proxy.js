@@ -70,7 +70,7 @@ module.exports = function proxyPolyfill() {
   /**
    * @constructor
    * @param {!Object} target
-   * @param {{apply, construct, get, set}} handler
+   * @param {{apply, construct, get, set, deleteProperty}} handler
    */
   ProxyPolyfill = function(target, handler) {
     const newTarget = this && this instanceof ProxyPolyfill ? this.constructor : undefined;
@@ -83,7 +83,7 @@ module.exports = function proxyPolyfill() {
 
   /**
    * @param {!Object} target
-   * @param {{apply, construct, get, set}} handler
+   * @param {{apply, construct, get, set, deleteProperty}} handler
    * @param {boolean=} allowRevocation
    */
   function ProxyCreate(target, handler, allowRevocation) {
@@ -97,7 +97,7 @@ module.exports = function proxyPolyfill() {
     // Fail on unsupported traps: Chrome doesn't do this, but ensure that users of the polyfill
     // are a bit more careful. Copy the internal parts of handler to prevent user changes.
     const unsafeHandler = handler;
-    handler = { 'get': null, 'set': null, 'apply': null, 'construct': null };
+    handler = { 'get': null, 'set': null, 'apply': null, 'construct': null, deleteProperty: null };
     for (let k in unsafeHandler) {
       if (!(k in handler)) {
         throw new TypeError(`Proxy polyfill does not support trap '${k}'`);
